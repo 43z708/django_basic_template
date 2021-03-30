@@ -1,10 +1,10 @@
 FROM python:3
 
-RUN mkdir /app
-WORKDIR /app
+RUN mkdir /code
+WORKDIR /code
 
-ADD requirements.txt /app/
+ADD requirements.txt /code/
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-ADD . /app/
+ADD . /code/

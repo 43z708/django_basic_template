@@ -8,5 +8,3 @@ RUN apk update && \
 # nginx config file
 COPY default.conf /etc/nginx/conf.d
 COPY uwsgi_params /etc/nginx/uwsgi_params
-
-WORKDIR /app/

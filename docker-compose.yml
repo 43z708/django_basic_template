@@ -23,12 +23,26 @@ services:
       - MYSQL_USER=default
       - MYSQL_PASSWORD=secret
 
+  phpmyadmin:
+    build: ./docker/phpmyadmin/
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+      - PMA_USER=default
+      - PMA_PASSWORD=secret
+    ports:
+      - 8080:80
+    links:
+      - mariadb
+    depends_on:
+      - mariadb
+  
   python:
     build: ./docker/python/
-    # 8001portを開いてNginxとリンク、python_projectプロジェクト、変更を検知してファイルをリロード、ログの出力設定
-    command: uwsgi --socket :8001 --module python_project.wsgi --py-autoreload 1 --logto /tmp/uwsgi.log
+    # 8001portを開いてNginxとリンク、appプロジェクト、変更を検知してファイルをリロード、ログの出力設定
+    command: uwsgi --socket :8001 --module app.wsgi --py-autoreload 1 --logto /tmp/uwsgi.log
     volumes:
-      - ./src:/app
+      - ./src:/code
       - ./static:/static
     expose:
       - "8001"
