@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  nginx:
+    build: ./docker/nginx
+    volumes: 
+      - ./static:/static
+    ports:
+      - "8000:8000"
+    depends_on:
+      - python
+
+  mariadb:
+    build: ./docker/mariadb/
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - dbvolume:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=default
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=default
+      - MYSQL_PASSWORD=secret
+
+  python:
+    build: ./docker/python/
+    # 8001portを開いてNginxとリンク、python_projectプロジェクト、変更を検知してファイルをリロード、ログの出力設定
+    command: uwsgi --socket :8001 --module python_project.wsgi --py-autoreload 1 --logto /tmp/uwsgi.log
+    volumes:
+      - ./src:/app
+      - ./static:/static
+    expose:
+      - "8001"
+    depends_on:
+      - mariadb
+
+volumes:
+  dbvolume:
+    driver: local
