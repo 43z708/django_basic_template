@@ -39,8 +39,8 @@ services:
   
   python:
     build: ./docker/python/
-    # 8001portを開いてNginxとリンク、appプロジェクト、変更を検知してファイルをリロード、ログの出力設定
-    command: uwsgi --socket :8001 --module app.wsgi --py-autoreload 1 --logto /tmp/uwsgi.log
+    # 8001portを開いてNginxとリンク、projectプロジェクト、変更を検知してファイルをリロード、ログの出力設定
+    command: uwsgi --socket :8001 --module project.wsgi --py-autoreload 1 --logto /tmp/uwsgi.log
     volumes:
       - ./src:/code
       - ./static:/static
