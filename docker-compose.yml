@@ -2,7 +2,9 @@ version: '3.7'
 
 services:
   nginx:
-    build: ./docker/nginx
+    build: 
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
     volumes: 
       - ./static:/static
     ports:
@@ -14,22 +16,22 @@ services:
     build: ./docker/mariadb/
     restart: always
     ports:
-      - 3306:3306
+      - ${DB_PORT}:3306
     volumes:
       - dbvolume:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=default
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_USER=default
-      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
 
   phpmyadmin:
     build: ./docker/phpmyadmin/
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mariadb
-      - PMA_USER=default
-      - PMA_PASSWORD=secret
+      - PMA_USER=${DB_USER}
+      - PMA_PASSWORD=${DB_PASSWORD}
     ports:
       - 8080:80
     links:
@@ -38,7 +40,9 @@ services:
       - mariadb
   
   python:
-    build: ./docker/python/
+    build: 
+      context: .
+      dockerfile: ./docker/python/Dockerfile
     # 8001portを開いてNginxとリンク、projectプロジェクト、変更を検知してファイルをリロード、ログの出力設定
     command: uwsgi --socket :8001 --module project.wsgi --py-autoreload 1 --logto /tmp/uwsgi.log
     volumes:

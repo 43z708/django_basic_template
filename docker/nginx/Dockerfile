@@ -6,5 +6,5 @@ RUN apk update && \
     apk add --update --no-cache --virtual=.build-dependencies g++
 
 # nginx config file
-COPY default.conf /etc/nginx/conf.d
-COPY uwsgi_params /etc/nginx/uwsgi_params
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d
+COPY ./docker/nginx/uwsgi_params /etc/nginx/uwsgi_params
